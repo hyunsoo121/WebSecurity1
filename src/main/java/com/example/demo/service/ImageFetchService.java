@@ -10,7 +10,7 @@ import java.net.URL;
 @Service
 public class ImageFetchService {
 
-    // ⚠ URL로 GET 요청을 보내서 응답 바이트와 Content-Type을 그대로 반환
+    // URL로 GET 요청을 보내서 응답 바이트와 Content-Type을 그대로 반환
     public DownloadedResource fetch(String targetUrl) throws Exception {
         URL url = new URL(targetUrl);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();

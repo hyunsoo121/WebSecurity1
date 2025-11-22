@@ -41,9 +41,7 @@ public class ImageController {
     @Value("${app.s3.base-url}")
     private String s3BaseUrl;
 
-    // ---------------------------
     // 공통: S3 이미지 리스트 조회
-    // ---------------------------
     private void populateImageList(Model model) {
         List<String> imageUrls = new ArrayList<>();
 
@@ -105,7 +103,7 @@ public class ImageController {
 
             log.info("URL image saved to S3. url={}, key={}", url, key);
 
-            // 🔽 방금 업로드된 이미지의 Imgproxy URL을 계산해서 FlashAttribute 로 전달
+            // 방금 업로드된 이미지의 Imgproxy URL을 계산해서 FlashAttribute 로 전달
             String originUrl = String.format("%s/%s/%s", s3BaseUrl, bucket, key);
             String options = "/rs:fit:300:200/q:85";
             String proxyUrl = imgproxyService.generateSignedUrl(originUrl, options);
