@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>이미지 SSRF 데모</title>
+</head>
+<body>
+<h1>이미지 SSRF 데모</h1>
+
+<!-- 1) URL 입력 폼 -->
+<h2>이미지 URL 입력 (게시판 업로드)</h2>
+<form th:action="@{/upload-url}" method="post">
+  <input type="text" name="url" placeholder="http://example.com/image.png" size="80"/>
+  <button type="submit">게시글 등록</button>
+</form>
+
+<!-- 방금 업로드된 이미지 미리보기 -->
+<div th:if="${lastImageUrl}">
+  <h3>방금 업로드된 이미지</h3>
+  <img th:src="${lastImageUrl}" style="max-width: 300px;"/><br/>
+</div>
+
+<p th:if="${message}" th:text="${message}" style="color:blue;"></p>
+
+
+<!-- 에러 메시지 출력 -->
+<p th:if="${errorMessage}" th:text="${errorMessage}" style="color:red;"></p>
+
+<!--  서버가 가져온 응답(이미지) 출력 -->
+<div th:if="${previewImage}">
+  <h3>서버가 가져온 응답</h3>
+  <p th:text="'요청 URL: ' + ${requestedUrl}"></p>
+  <img th:src="'data:image/png;base64,' + ${previewImage}" style="max-width:300px;"/><br/>
+</div>
+
+<hr/>
+
+<!-- 2) 파일 업로드 (기존 코드) -->
+<h2>파일 업로드</h2>
+<form th:action="@{/upload}" method="post" enctype="multipart/form-data">
+  <input type="file" name="file"/>
+  <button type="submit">업로드</button>
+</form>
+<p th:if="${message}" th:text="${message}"></p>
+
+<hr/>
+
+<!-- 3) S3에 있는 이미지들 (기존 루프가 있다면 여기에) -->
+<h2>업로드된 이미지들</h2>
+<div th:if="${images != null}">
+  <div th:each="img : ${images}">
+    <img th:src="${img}" style="max-width: 300px;"/><br/>
+    <span th:text="${img}"></span>
+    <hr/>
+  </div>
+</div>
+
+</body>
+</html>
