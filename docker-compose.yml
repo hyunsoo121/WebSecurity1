@@ -1,0 +1,54 @@
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEFAULT_REGION=${AWS_REGION}
+      - APP_S3_BUCKET=${APP_S3_BUCKET}
+    volumes:
+      - localstack-data:/var/lib/localstack
+      - ./init-localstack.sh:/etc/localstack/init/ready.d/init-localstack.sh
+    # Health Check 제거
+  
+  imgproxy_server:
+    image: ghcr.io/imgproxy/imgproxy:v3.14.0
+    container_name: imgproxy_server
+    ports:
+      - "8081:8080"
+    environment:
+      - IMGPROXY_BIND=0.0.0.0:8080
+      - IMGPROXY_KEY=${IMGPROXY_KEY}
+      - IMGPROXY_SALT=${IMGPROXY_SALT}
+    depends_on:
+      localstack:
+        condition: service_started
+
+  app_server:
+    build: .
+    container_name: app_server
+    ports:
+      - "8080:8080"
+    environment:
+      - aws.s3.endpoint=${AWS_S3_ENDPOINT}
+      - aws.region=${AWS_REGION}
+      - aws.accessKey=${AWS_ACCESS_KEY}
+      - aws.secretKey=${AWS_SECRET_KEY}
+      - app.s3.bucket=${APP_S3_BUCKET}
+      - app.s3.base-url=${APP_S3_BASE_URL}
+      - imgproxy.base-url=${IMGPROXY_BASE_URL}
+      - imgproxy.key=${IMGPROXY_KEY}
+      - imgproxy.salt=${IMGPROXY_SALT}
+      - file.upload-dir=/app/uploads
+      - SERVER_PORT=8080
+
+    depends_on:
+      localstack:
+        condition: service_started
+      imgproxy_server:
+        condition: service_started
+
+volumes:
+  localstack-data:

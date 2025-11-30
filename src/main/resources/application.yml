@@ -1,0 +1,44 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+    jpa:
+      hibernate:
+        ddl-auto: update   # 엔티티 보고 테이블 자동 생성/수정
+      show-sql: true       # 콘솔에 SQL 로그 출력
+    h2:
+      console:
+        enabled: true
+        path: /h2-console
+
+server:
+  port: 8082
+
+file:
+  upload-dir: uploads
+
+aws:
+  region: ${AWS_REGION}
+  accessKey: ${AWS_ACCESS_KEY}
+  secretKey: ${AWS_SECRET_KEY}
+  s3:
+    endpoint: ${AWS_S3_ENDPOINT}
+
+app:
+  s3:
+    bucket: ${APP_S3_BUCKET}
+    base-url: ${APP_S3_BASE_URL}
+
+imgproxy:
+  base-url: ${IMGPROXY_BASE_URL}
+  key: ${IMGPROXY_KEY}
+  salt: ${IMGPROXY_SALT}
