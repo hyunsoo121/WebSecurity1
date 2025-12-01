@@ -71,7 +71,8 @@ public class ImageController {
     @GetMapping("/")
     public String index(Model model) {
         populateImageList(model);
-        return "index";
+//        return "index";
+        return "main";
     }
 
     // URL로 이미지를 받아서 S3(게시판 첨부파일처럼) 에 저장
